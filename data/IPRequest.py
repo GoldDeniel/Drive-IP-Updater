@@ -1,5 +1,7 @@
 import pip
 import os
+import ctypes
+ctypes.windll.user32.ShowWindow( ctypes.windll.kernel32.GetConsoleWindow(), 0 )
 def clear():
     os.system('cls' if os.name=='nt' else 'clear')
 clear()
@@ -18,34 +20,40 @@ import_or_install()
 
 import time
 import pyperclip
-import ctypes
+#import ctypes
 from pydrive.auth import GoogleAuth
 from pydrive.drive import GoogleDrive
 from requests import get
 from requests.sessions import extract_cookies_to_jar
 
 
-gauth = GoogleAuth()
-gauth.LocalWebserverAuth()
-drive = GoogleDrive(gauth)
+
 externalIPAddress = ''
 class UpdateIP:
     def DriveRootFolderQuery():
         global externalIPAddress
+        os.chdir('../credentials')
+        gauth = GoogleAuth()
+        gauth.LocalWebserverAuth()
+        drive = GoogleDrive(gauth)
+        os.chdir('../data')
 
         file_list = drive.ListFile({'q': "'root' in parents and trashed=false"}).GetList()
         for file1 in file_list:
             if  'IPUpdate.txt' in file1['title']:
                 externalIPAddress = file1.GetContentString()
                 clear()
-                pyperclip.copy(externalIPAddress)
-                
+                try:
+                    pyperclip.copy(externalIPAddress)
+                except:
+                    print('Could not copy to clipboard')
                 file2 = open("external_ip.txt", "w")
                 file2.write(externalIPAddress)
                 
-                if os.name=='nt':
-                    ctypes.windll.user32.MessageBoxW(0, 'IP was copied to the clipboard, and \'external_ip.txt\' was generated!', externalIPAddress, 1)
                 
         return
     
 UpdateIP.DriveRootFolderQuery()
+# # # if os.name=='nt':
+    # # # ctypes.windll.user32.messageboxw(0, 'ip was copied to the clipboard, and \'external_ip.txt\' was generated!', externalipaddress, 1)
+                

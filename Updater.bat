@@ -1,3 +1,4 @@
 @echo off
-python Update\IPUpdater.py
+cd data
+python IPUpdater.py
 PAUSE

@@ -1,4 +1,3 @@
 @echo off
-cd Request\data
+cd data
 python IPRequest.py
-PAUSE

@@ -1,16 +1,37 @@
-from os import extsep
+import time
+import os
+import pip
+
+if os.name == 'nt':
+    clear = lambda: os.system('cls')
+else:
+    clear = lambda: os.system('clear')
+    
+def import_or_install():
+    try:
+        from pydrive.auth import GoogleAuth
+        from pydrive.drive import GoogleDrive
+        import pyperclip
+    except ImportError:
+        pip.main(['install', 'pydrive']) 
+        pip.main(['install', 'pyperclip']) 
+        
+        clear()
+        print('pydrive has been installed!')
+import_or_install()
+
+from requests import get
 from pydrive.auth import GoogleAuth
 from pydrive.drive import GoogleDrive
-from requests import get
-
-import time
-
 from requests.sessions import extract_cookies_to_jar
 
+os.chdir('../credentials')
 gauth = GoogleAuth()
 gauth.LocalWebserverAuth()
 drive = GoogleDrive(gauth)
+os.chdir('../data')
 externalIPAddress = ''
+
 class UpdateIP:
     
     def DriveRootFolderQuery():
